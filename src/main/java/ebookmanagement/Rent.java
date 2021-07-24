@@ -24,16 +24,16 @@ public class Rent {
     @PrePersist
     public void onPrePersist() {
         if (null == this.status) {
-            this.status = "RENT_REQUEST";
+            this.status = "RENTED";
         }
     }
 
     @PostPersist
     public void onPostPersist() {
-        if("RENT_REQUEST".equals(this.status)) {
+        if("RENTED".equals(this.status)) {
             Rented rented = new Rented();
             BeanUtils.copyProperties(this, rented);
-            rented.publishAfterCommit();
+            rented.publish();
 
             //Following code causes dependency to external APIs
             // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
@@ -50,11 +50,11 @@ public class Rent {
 
     @PostUpdate
     public void onPostUpdate(){
-        if("APPROVED".equals(this.status) || "REJECTED".equals(this.status) || "RETURNED".equals(this.status)) {
+        if("RETURNED".equals(this.status)) {
             Returned returned = new Returned();
             BeanUtils.copyProperties(this, returned);
             returned.publishAfterCommit();
-
+        } else if("CANCELED".equals(this.status)) {
             Canceled canceled = new Canceled();
             BeanUtils.copyProperties(this, canceled);
             canceled.publishAfterCommit();

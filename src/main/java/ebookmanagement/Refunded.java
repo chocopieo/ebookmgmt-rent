@@ -1,11 +1,17 @@
-
 package ebookmanagement;
 
-public class Rejected extends AbstractEvent {
+import java.util.Date;
+
+public class Refunded extends AbstractEvent {
 
     private Long id;
     private Long rentId;
     private String status;
+    private Date refundedDate;
+
+    public Refunded(){
+        super();
+    }
 
     public Long getId() {
         return id;
@@ -28,5 +34,7 @@ public class Rejected extends AbstractEvent {
     public void setStatus(String status) {
         this.status = status;
     }
-}
+    public Date getRefundedDate() { return refundedDate; }
 
+    public void setRefundedDate(Date refundedDate) { this.refundedDate = refundedDate; }
+}

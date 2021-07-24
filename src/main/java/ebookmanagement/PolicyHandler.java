@@ -8,6 +8,8 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class PolicyHandler{
     @Autowired RentRepository rentRepository;
@@ -40,30 +42,33 @@ public class PolicyHandler{
 
         Long rentId = approved.getRentId();
         String status = approved.getStatus();
+        Date approvedDate = approved.getApprovedDate();
 
         if("APPROVED".equals(status)) {
             Rent rent = rentRepository.findById(rentId).get();
             rent.setId(rentId);
             rent.setStatus(status);
+            rent.setRentedDate(approvedDate);
 
             rentRepository.save(rent);
         }
     }
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverRejected_ChangeStatus(@Payload Rejected rejected){
+    public void wheneverRefunded_ChangeStatus(@Payload Refunded refunded){
 
-        if(!rejected.validate()) return;
+        if(!refunded.validate()) return;
 
-        System.out.println("\n\n##### listener ChangeStatus : " + rejected.toJson() + "\n\n");
+        System.out.println("\n\n##### listener ChangeStatus : " + refunded.toJson() + "\n\n");
 
-        Long rentId = rejected.getRentId();
-        String status = rejected.getStatus();
+        Long rentId = refunded.getRentId();
+        String status = refunded.getStatus();
 
-        if("REJECTED".equals(status)) {
+        if("REFUNDED".equals(status)) {
             Rent rent = rentRepository.findById(rentId).get();
             rent.setId(rentId);
-            rent.setStatus(status);
+            rent.setStatus("CANCELED");
+            rent.setCanceledDate(new Date());
 
             rentRepository.save(rent);
         }
