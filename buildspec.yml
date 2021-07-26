@@ -86,7 +86,6 @@ phases:
                     periodSeconds: 5
                     failureThreshold: 10
         EOF
-#                  무정지 배포 테스트용
 #                  livenessProbe:
 #                    httpGet:
 #                      path: /actuator/health
