@@ -78,6 +78,7 @@ phases:
                   ports:
                     - containerPort: 8080
         EOF
+#                  무정지 배포 테스트용
 #                  readinessProbe:
 #                    httpGet:
 #                      path: /actuator/health
