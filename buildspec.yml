@@ -92,10 +92,6 @@ phases:
                         configMapKeyRef:
                           name: $_PROJECT_NAME-configmap
                           key: api.url.payment
-                  args:
-                    - /bin/sh
-                    - -c
-                    - touch /tmp/healty; sleep 90; rm -rf /tmp/healthy; sleep 600
                   readinessProbe:
                     httpGet:
                       path: /actuator/health
@@ -105,18 +101,24 @@ phases:
                     periodSeconds: 5
                     failureThreshold: 10
                   livenessProbe:
-                    exec:
-                      command:
-                      - cat
-                      - /tmp/healthy
+                    httpGet:
+                      path: /actuator/health
+                      port: 8080
                     initialDelaySeconds: 120
                     timeoutSeconds: 2
                     periodSeconds: 5
                     failureThreshold: 5
         EOF
-#                    httpGet:
-#                      path: /actuator/health
-#                      port: 8080
+#
+#                  args:
+#                    - /bin/sh
+#                    - -c
+#                    - touch /tmp/healty; sleep 90; rm -rf /tmp/healthy; sleep 600
+#
+#                    exec:
+#                      command:
+#                      - cat
+#                      - /tmp/healthy
 cache:
   paths:
     - '/root/.m2/**/*'
