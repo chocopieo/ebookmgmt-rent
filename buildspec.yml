@@ -105,9 +105,6 @@ phases:
                     periodSeconds: 5
                     failureThreshold: 10
                   livenessProbe:
-                    httpGet:
-                      path: /actuator/health
-                      port: 8080
                     exec:
                       command:
                       - cat
@@ -117,6 +114,9 @@ phases:
                     periodSeconds: 5
                     failureThreshold: 5
         EOF
+#                    httpGet:
+#                      path: /actuator/health
+#                      port: 8080
 cache:
   paths:
     - '/root/.m2/**/*'
